@@ -9,7 +9,8 @@
     "rootDir": ".",
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "declaration": true
+    "declaration": true,
+    "types": ["node"]
   },
   "include": ["shared/**/*.ts", "agents/**/*.ts"],
   "exclude": ["node_modules", "dist", "scripts"]

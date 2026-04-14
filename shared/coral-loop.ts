@@ -11,7 +11,6 @@
 
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { generateText, tool, jsonSchema } from "ai";
 import { openai } from "@ai-sdk/openai";
 
@@ -104,13 +103,10 @@ export async function runCoralAgent(config: AgentConfig): Promise<never> {
   // ── Connect to Coral MCP ──
   const client = new Client({ name: agentId, version: "1.0.0" });
 
-  const isSSE = coralUrl.endsWith("/sse/");
-  const transport = isSSE
-    ? new SSEClientTransport(new URL(coralUrl))
-    : new StreamableHTTPClientTransport(new URL(coralUrl));
+  const transport = new StreamableHTTPClientTransport(new URL(coralUrl));
 
   await client.connect(transport);
-  console.log(`[${config.name}] Connected to Coral (${isSSE ? "SSE" : "Streamable HTTP"})`);
+  console.log(`[${config.name}] Connected to Coral`);
 
   // ── Discover and bridge tools ──
   const { tools: mcpTools } = await client.listTools();
