@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-raydium"
 version = "0.1.0"
-description = "Raydium AMM and CLMM pool operations — swaps, liquidity provision, pool creation, LaunchLab token launches, and farming on Solana."
+description = "Raydium Protocol — Trade API, CLMM and CPMM pool operations, AMM V4, LaunchLab token launches, farming/staking, CPI integration, and liquidity management on Solana."
 
-readme = "Raydium AMM and CLMM pool operations — swaps, liquidity provision, pool creation, LaunchLab token launches, and farming on Solana."
-summary = "Raydium AMM and CLMM pool operations — swaps, liquidity provision, pool creation, LaunchLab token launches, and farming on Solana."
+readme = "Raydium Protocol — Trade API, CLMM and CPMM pool operations, AMM V4, LaunchLab token launches, farming/staking, CPI integration, and liquidity management on Solana."
+summary = "Raydium Protocol — Trade API, CLMM and CPMM pool operations, AMM V4, LaunchLab token launches, farming/staking, CPI integration, and liquidity management on Solana."
 
 [agent.license]
 type = "sdpx"

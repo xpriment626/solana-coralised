@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-glam"
 version = "0.1.0"
-description = "GLAM Protocol vault management — tokenised vaults, share classes, DeFi strategies, treasury operations, and access control on Solana."
+description = "GLAM Protocol — tokenised vault management, share classes, Jupiter swaps, Kamino lending, staking (Marinade/Sanctum/LST), CCTP cross-chain USDC, timelock, and NAV pricing on Solana."
 
-readme = "GLAM Protocol vault management — tokenised vaults, share classes, DeFi strategies, treasury operations, and access control on Solana."
-summary = "GLAM Protocol vault management — tokenised vaults, share classes, DeFi strategies, treasury operations, and access control on Solana."
+readme = "GLAM Protocol — tokenised vault management, share classes, Jupiter swaps, Kamino lending, staking (Marinade/Sanctum/LST), CCTP cross-chain USDC, timelock, and NAV pricing on Solana."
+summary = "GLAM Protocol — tokenised vault management, share classes, Jupiter swaps, Kamino lending, staking (Marinade/Sanctum/LST), CCTP cross-chain USDC, timelock, and NAV pricing on Solana."
 
 [agent.license]
 type = "sdpx"

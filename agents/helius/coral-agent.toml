@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-helius"
 version = "0.1.0"
-description = "Helius infrastructure — RPC, DAS API for NFTs/assets, real-time WebSocket/Laserstream streaming, webhooks, priority fees, and wallet analysis on Solana."
+description = "Helius infrastructure — smart tx submission (Sender), DAS API for NFTs/assets, LaserStream gRPC, WebSocket streaming, webhooks, priority fees, wallet analysis, and MCP server on Solana."
 
-readme = "Helius infrastructure — RPC, DAS API for NFTs/assets, real-time WebSocket/Laserstream streaming, webhooks, priority fees, and wallet analysis on Solana."
-summary = "Helius infrastructure — RPC, DAS API for NFTs/assets, real-time WebSocket/Laserstream streaming, webhooks, priority fees, and wallet analysis on Solana."
+readme = "Helius infrastructure — smart tx submission (Sender), DAS API for NFTs/assets, LaserStream gRPC, WebSocket streaming, webhooks, priority fees, wallet analysis, and MCP server on Solana."
+summary = "Helius infrastructure — smart tx submission (Sender), DAS API for NFTs/assets, LaserStream gRPC, WebSocket streaming, webhooks, priority fees, wallet analysis, and MCP server on Solana."
 
 [agent.license]
 type = "sdpx"

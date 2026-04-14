@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-agent-kit"
 version = "0.1.0"
-description = "SendAI Solana Agent Kit — 60+ blockchain actions, LangChain/Vercel AI integration, MCP server setup, and autonomous agent patterns."
+description = "SendAI Solana Agent Kit — 60+ blockchain actions via plugin architecture (Token, NFT, DeFi, Misc, Blinks), LangChain/Vercel AI integration, MCP server, and embedded wallet support."
 
-readme = "SendAI Solana Agent Kit — 60+ blockchain actions, LangChain/Vercel AI integration, MCP server setup, and autonomous agent patterns."
-summary = "SendAI Solana Agent Kit — 60+ blockchain actions, LangChain/Vercel AI integration, MCP server setup, and autonomous agent patterns."
+readme = "SendAI Solana Agent Kit — 60+ blockchain actions via plugin architecture (Token, NFT, DeFi, Misc, Blinks), LangChain/Vercel AI integration, MCP server, and embedded wallet support."
+summary = "SendAI Solana Agent Kit — 60+ blockchain actions via plugin architecture (Token, NFT, DeFi, Misc, Blinks), LangChain/Vercel AI integration, MCP server, and embedded wallet support."
 
 [agent.license]
 type = "sdpx"

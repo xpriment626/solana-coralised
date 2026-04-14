@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-meteora"
 version = "0.1.0"
-description = "Meteora DeFi operations — DLMM pools, DAMM, dynamic bonding curves, Alpha Vaults, token launches, and zap operations on Solana."
+description = "Meteora Protocol — DLMM, DAMM v1/v2, dynamic bonding curves, Alpha Vaults, Zap, M3M3 Stake-for-Fee, Pool Farms, and token launches on Solana. Eight SDK suite."
 
-readme = "Meteora DeFi operations — DLMM pools, DAMM, dynamic bonding curves, Alpha Vaults, token launches, and zap operations on Solana."
-summary = "Meteora DeFi operations — DLMM pools, DAMM, dynamic bonding curves, Alpha Vaults, token launches, and zap operations on Solana."
+readme = "Meteora Protocol — DLMM, DAMM v1/v2, dynamic bonding curves, Alpha Vaults, Zap, M3M3 Stake-for-Fee, Pool Farms, and token launches on Solana. Eight SDK suite."
+summary = "Meteora Protocol — DLMM, DAMM v1/v2, dynamic bonding curves, Alpha Vaults, Zap, M3M3 Stake-for-Fee, Pool Farms, and token launches on Solana. Eight SDK suite."
 
 [agent.license]
 type = "sdpx"

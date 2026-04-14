@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-surfpool"
 version = "0.1.0"
-description = "Surfpool testing environment — drop-in solana-test-validator replacement with mainnet forking, cheatcodes, and Infrastructure as Code."
+description = "Surfpool testing environment — drop-in solana-test-validator replacement with mainnet forking, cheatcodes, Infrastructure as Code, and Surfpool Studio."
 
-readme = "Surfpool testing environment — drop-in solana-test-validator replacement with mainnet forking, cheatcodes, and Infrastructure as Code."
-summary = "Surfpool testing environment — drop-in solana-test-validator replacement with mainnet forking, cheatcodes, and Infrastructure as Code."
+readme = "Surfpool testing environment — drop-in solana-test-validator replacement with mainnet forking, cheatcodes, Infrastructure as Code, and Surfpool Studio."
+summary = "Surfpool testing environment — drop-in solana-test-validator replacement with mainnet forking, cheatcodes, Infrastructure as Code, and Surfpool Studio."
 
 [agent.license]
 type = "sdpx"

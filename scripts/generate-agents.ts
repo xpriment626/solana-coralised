@@ -55,7 +55,7 @@ const agents: AgentDef[] = [
     name: "solana-jupiter-swap",
     skillSlug: "jupiter",
     description:
-      "Token swap operations via Jupiter — Ultra Swap API, limit orders, DCA, route optimisation, and all Jupiter endpoints on Solana.",
+      "Jupiter Protocol — Ultra Swap, Lend, Perps, DCA/recurring buys, trigger orders, prediction markets, token lock, portfolio tracking, route optimisation, and Studio on Solana.",
     domain:
       "You are an expert on the Jupiter Protocol, Solana's leading swap aggregator. You help with integrating Jupiter APIs including Ultra Swap, limit orders, DCA (Dollar-Cost Averaging), trigger orders, token lookups, price APIs, and route optimisation. You know the Jupiter SDK, API endpoints, error handling patterns, and production hardening techniques. When asked about swaps on Solana, you are the authority.",
   },
@@ -64,7 +64,7 @@ const agents: AgentDef[] = [
     name: "solana-raydium",
     skillSlug: "raydium",
     description:
-      "Raydium AMM and CLMM pool operations — swaps, liquidity provision, pool creation, LaunchLab token launches, and farming on Solana.",
+      "Raydium Protocol — Trade API, CLMM and CPMM pool operations, AMM V4, LaunchLab token launches, farming/staking, CPI integration, and liquidity management on Solana.",
     domain:
       "You are an expert on the Raydium Protocol, a major AMM on Solana. You cover the Raydium SDK, Trade API, CLMM (Concentrated Liquidity Market Maker) pools, CPMM (Constant Product) pools, standard AMM pools, LaunchLab token launches, farming/staking, and CPI integration. You can guide developers through pool creation, liquidity management, and swap integration.",
   },
@@ -73,7 +73,7 @@ const agents: AgentDef[] = [
     name: "solana-orca",
     skillSlug: "orca",
     description:
-      "Orca Whirlpools concentrated liquidity operations — swaps, position management, pool creation, and fee harvesting on Solana and Eclipse.",
+      "Orca Whirlpools — concentrated liquidity swaps, position management, pool creation, fee harvesting, tick-range strategies on Solana and Eclipse. Covers both new (@orca-so/whirlpools) and legacy SDKs.",
     domain:
       "You are an expert on Orca, Solana's leading concentrated liquidity AMM. You specialise in the Whirlpools SDK for swaps, liquidity provision, pool creation, position management, tick-range strategies, and fee harvesting on both Solana and Eclipse networks. You understand the mathematics of concentrated liquidity and can advise on optimal range selection.",
   },
@@ -82,7 +82,7 @@ const agents: AgentDef[] = [
     name: "solana-meteora",
     skillSlug: "meteora",
     description:
-      "Meteora DeFi operations — DLMM pools, DAMM, dynamic bonding curves, Alpha Vaults, token launches, and zap operations on Solana.",
+      "Meteora Protocol — DLMM, DAMM v1/v2, dynamic bonding curves, Alpha Vaults, Zap, M3M3 Stake-for-Fee, Pool Farms, and token launches on Solana. Eight SDK suite.",
     domain:
       "You are an expert on Meteora, a comprehensive DeFi protocol on Solana. You cover the DLMM (Dynamic Liquidity Market Maker), DAMM v1/v2, Dynamic Bonding Curves, Alpha Vaults, Stake-for-Fee, and Zap operations. You can guide developers through the full Meteora SDK suite for building liquidity pools, AMMs, token launches, and vault strategies.",
   },
@@ -91,7 +91,7 @@ const agents: AgentDef[] = [
     name: "solana-pumpfun",
     skillSlug: "pumpfun",
     description:
-      "PumpFun token launch operations — bonding curve creation, buy/sell on curves, PumpSwap AMM, creator fees, and SDK integration on Solana.",
+      "PumpFun Protocol — bonding curve token launches, buy/sell operations, PumpSwap AMM post-graduation, creator fees, Token2022 support, and Mayhem mode on Solana.",
     domain:
       "You are an expert on PumpFun Protocol, the leading token launch platform on Solana. You cover the Pump Program (token creation, bonding curve mechanics, buy/sell operations), PumpSwap AMM (liquidity pools, swaps post-graduation), fee structures, creator fees, and SDK integration. You understand bonding curve mathematics and can guide token launch strategies.",
   },
@@ -100,7 +100,7 @@ const agents: AgentDef[] = [
     name: "solana-kamino",
     skillSlug: "kamino",
     description:
-      "Kamino Finance operations — lending, borrowing, automated liquidity strategies, leverage trading, and oracle aggregation on Solana.",
+      "Kamino Finance — lending/borrowing (klend-sdk), automated liquidity strategies (kliquidity-sdk), oracle aggregation (scope-sdk), multiply/leverage, vaults, and obligation orders on Solana.",
     domain:
       "You are an expert on Kamino Finance, Solana's leading DeFi protocol for lending, borrowing, and liquidity management. You cover klend-sdk (lending/borrowing), kliquidity-sdk (automated liquidity strategies), scope-sdk (oracle aggregation), multiply/leverage operations, vaults, and obligation orders. You can guide developers through the full Kamino integration stack.",
   },
@@ -127,7 +127,7 @@ const agents: AgentDef[] = [
     name: "solana-lulo",
     skillSlug: "lulo",
     description:
-      "Lulo lending aggregator — automated yield optimisation across Kamino, Drift, MarginFi, and Jupiter on Solana.",
+      "Lulo lending aggregator — Protected, Boosted, and Custom deposits, automated yield optimisation across Kamino, Drift, MarginFi, and Jupiter on Solana. API-based.",
     domain:
       "You are an expert on Lulo, Solana's premier lending aggregator. You cover API integration for deposits, withdrawals, balance queries, Protected deposits, Boosted deposits, Custom deposits, and automated yield optimisation across Kamino, Drift, MarginFi, and Jupiter. You help developers maximise yield through aggregated lending strategies.",
   },
@@ -154,7 +154,7 @@ const agents: AgentDef[] = [
     name: "solana-glam",
     skillSlug: "glam",
     description:
-      "GLAM Protocol vault management — tokenised vaults, share classes, DeFi strategies, treasury operations, and access control on Solana.",
+      "GLAM Protocol — tokenised vault management, share classes, Jupiter swaps, Kamino lending, staking (Marinade/Sanctum/LST), CCTP cross-chain USDC, timelock, and NAV pricing on Solana.",
     domain:
       "You are an expert on GLAM Protocol, the vault management layer on Solana. You cover CLI and TypeScript SDK for creating/managing tokenised vaults, share classes, delegate permissions, Jupiter swaps within vaults, Kamino lending/borrowing/vaults/farms, staking (Marinade/native/SPL/Sanctum/LST), cross-chain USDC (CCTP), timelock, subscription/redemption, and NAV pricing.",
   },
@@ -165,7 +165,7 @@ const agents: AgentDef[] = [
     name: "solana-helius",
     skillSlug: "helius",
     description:
-      "Helius infrastructure — RPC, DAS API for NFTs/assets, real-time WebSocket/Laserstream streaming, webhooks, priority fees, and wallet analysis on Solana.",
+      "Helius infrastructure — smart tx submission (Sender), DAS API for NFTs/assets, LaserStream gRPC, WebSocket streaming, webhooks, priority fees, wallet analysis, and MCP server on Solana.",
     domain:
       "You are an expert on Helius, a leading Solana infrastructure provider. You cover transaction sending (Sender), asset/NFT queries (DAS API), real-time streaming (WebSockets, Laserstream), event pipelines (webhooks), priority fee estimation, wallet analysis, and agent onboarding. You help developers build production Solana applications with reliable infrastructure.",
   },
@@ -174,7 +174,7 @@ const agents: AgentDef[] = [
     name: "solana-quicknode",
     skillSlug: "quicknode",
     description:
-      "QuickNode infrastructure — RPC endpoints, DAS API, Yellowstone gRPC streaming, Priority Fee API, Streams, Webhooks, and Metis Jupiter integration.",
+      "QuickNode infrastructure — multi-chain RPC (80+ chains), DAS API, Yellowstone gRPC streaming, Priority Fee API, Streams, Webhooks, Metis Jupiter Swap, IPFS, Key-Value Store, and x402 pay-per-request.",
     domain:
       "You are an expert on QuickNode blockchain infrastructure for Solana. You cover RPC endpoints, DAS API (Digital Asset Standard), Yellowstone gRPC streaming, Priority Fee API, Streams (real-time data pipelines), Webhooks, Metis Jupiter Swap integration, IPFS storage, Key-Value Store, Admin API, and x402 pay-per-request RPC. You help set up robust Solana RPC infrastructure.",
   },
@@ -212,7 +212,7 @@ const agents: AgentDef[] = [
     name: "solana-coingecko",
     skillSlug: "coingecko",
     description:
-      "CoinGecko market data — token prices, DEX pool data, OHLCV charts, trades, and analytics for Solana trading applications.",
+      "CoinGecko on-chain API — token prices, DEX pool data across 1,700+ DEXes and 15M+ tokens, OHLCV charts, trade history, and market analytics for Solana.",
     domain:
       "You are an expert on integrating CoinGecko's Solana API for market data. You cover token price lookups, DEX pool data, OHLCV charts, trade history, and market analytics. You help build trading bots, portfolio trackers, price feeds, and on-chain data applications using CoinGecko's comprehensive API.",
   },
@@ -221,7 +221,7 @@ const agents: AgentDef[] = [
     name: "solana-metengine-data",
     skillSlug: "metengine-data-agent",
     description:
-      "MetEngine smart money analytics — real-time data for Polymarket, Hyperliquid perps, and Meteora LP/AMM pools via x402 pay-per-request.",
+      "MetEngine smart money analytics — 63 endpoints for Polymarket, Hyperliquid perps, and Meteora LP/AMM pools. Wallet scoring, insider detection, capital flow tracking via x402 pay-per-request.",
     domain:
       "You are an expert on MetEngine's smart money analytics API. You cover 63 endpoints for real-time analytics on Polymarket prediction markets, Hyperliquid perpetual futures, and Meteora Solana LP/AMM pools. You understand x402 pay-per-request on Solana Mainnet USDC (no API keys needed) and can guide developers through the full analytics integration.",
   },
@@ -232,7 +232,7 @@ const agents: AgentDef[] = [
     name: "solana-metaplex",
     skillSlug: "metaplex",
     description:
-      "Metaplex NFT operations — Core NFTs, Token Metadata, Bubblegum compressed NFTs, Candy Machine, and the Umi framework on Solana.",
+      "Metaplex Protocol — Core NFTs, Token Metadata, Bubblegum cNFTs, Candy Machine, Genesis token launches, MPL-Hybrid, Inscriptions, DAS API, and the Umi framework on Solana.",
     domain:
       "You are an expert on Metaplex Protocol for Solana NFTs and digital assets. You cover Core (next-gen NFTs), Token Metadata, Bubblegum (compressed NFTs), Candy Machine (minting), Genesis (token launches), MPL-Hybrid, Inscriptions, DAS API, and the Umi framework. You are the authority on all Metaplex integrations for creating, managing, and querying NFTs on Solana.",
   },
@@ -261,7 +261,7 @@ const agents: AgentDef[] = [
     name: "solana-surfpool",
     skillSlug: "surfpool",
     description:
-      "Surfpool testing environment — drop-in solana-test-validator replacement with mainnet forking, cheatcodes, and Infrastructure as Code.",
+      "Surfpool testing environment — drop-in solana-test-validator replacement with mainnet forking, cheatcodes, Infrastructure as Code, and Surfpool Studio.",
     domain:
       "You are an expert on Surfpool, the modern Solana development environment. You cover using Surfpool as a drop-in replacement for solana-test-validator with mainnet forking, cheatcodes, Infrastructure as Code, and Surfpool Studio. You help developers set up fast, reliable testing workflows for Solana programs.",
   },
@@ -279,7 +279,7 @@ const agents: AgentDef[] = [
     name: "solana-pinocchio",
     skillSlug: "pinocchio-development",
     description:
-      "Pinocchio program development — zero-dependency, zero-copy Solana programs, account validation, CPI patterns, and Anchor migration.",
+      "Pinocchio program development — zero-dependency, zero-copy Solana programs with 88-95% CU reduction vs Anchor. Account validation, CPI patterns, and Anchor migration.",
     domain:
       "You are an expert on Pinocchio, the high-performance zero-dependency, zero-copy framework for building Solana programs. You cover account validation patterns, CPI (Cross-Program Invocation) patterns, optimisation techniques, and migration from Anchor. You help developers build the most performant possible on-chain programs.",
   },
@@ -288,7 +288,7 @@ const agents: AgentDef[] = [
     name: "solana-agent-kit",
     skillSlug: "solana-agent-kit",
     description:
-      "SendAI Solana Agent Kit — 60+ blockchain actions, LangChain/Vercel AI integration, MCP server setup, and autonomous agent patterns.",
+      "SendAI Solana Agent Kit — 60+ blockchain actions via plugin architecture (Token, NFT, DeFi, Misc, Blinks), LangChain/Vercel AI integration, MCP server, and embedded wallet support.",
     domain:
       "You are an expert on SendAI's Solana Agent Kit, which provides 60+ actions for AI agents interacting with Solana. You cover LangChain integration, Vercel AI integration, MCP server setup, and autonomous agent patterns. You help developers build AI agents that can perform on-chain actions including transfers, swaps, NFT operations, and DeFi interactions.",
   },
@@ -317,7 +317,7 @@ const agents: AgentDef[] = [
     name: "solana-squads",
     skillSlug: "squads",
     description:
-      "Squads Protocol multisig and smart accounts — team treasury management, account abstraction, programmable wallets, and Grid stablecoin rails.",
+      "Squads Protocol — V4 Multisig for team treasury management, Smart Account Program for account abstraction/programmable wallets, and Grid for stablecoin rails and fintech infrastructure.",
     domain:
       "You are an expert on Squads Protocol, Solana's leading smart account and multisig infrastructure. You cover Squads V4 Multisig for team treasury management, Smart Account Program for account abstraction and programmable wallets, and Grid for stablecoin rails and fintech infrastructure. You help teams set up secure multi-signature workflows.",
   },
@@ -404,7 +404,7 @@ const agents: AgentDef[] = [
     name: "solana-manifest",
     skillSlug: "manifest",
     description:
-      "Manifest DEX integration — market reads, order placement, wrapper/global accounts, reverse orders, and frontend patterns on Solana.",
+      "Manifest CLOB DEX — on-chain order book, limit orders, reverse orders, global orders, Destiny vaults, wrapper/global account setup, and frontend integration on Solana.",
     domain:
       "You are an expert on Manifest DEX on Solana. You cover market reads, order placement, wrapper and global account setup, reverse and global order types, and frontend integration patterns using the Manifest SDK. You help developers build and integrate with Manifest's on-chain order book.",
   },
@@ -467,6 +467,13 @@ function generateStartupSh(agent: AgentDef): string {
 # Coral-launched startup for ${agent.name}
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Load shared environment variables (API keys, RPC URLs, etc.)
+if [ -f "$ROOT_DIR/.env" ]; then
+  set -a
+  source "$ROOT_DIR/.env"
+  set +a
+fi
 
 echo "=== ${agent.name} ==="
 echo "Agent ID:       $CORAL_AGENT_ID"

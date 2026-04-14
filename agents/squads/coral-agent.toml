@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-squads"
 version = "0.1.0"
-description = "Squads Protocol multisig and smart accounts — team treasury management, account abstraction, programmable wallets, and Grid stablecoin rails."
+description = "Squads Protocol — V4 Multisig for team treasury management, Smart Account Program for account abstraction/programmable wallets, and Grid for stablecoin rails and fintech infrastructure."
 
-readme = "Squads Protocol multisig and smart accounts — team treasury management, account abstraction, programmable wallets, and Grid stablecoin rails."
-summary = "Squads Protocol multisig and smart accounts — team treasury management, account abstraction, programmable wallets, and Grid stablecoin rails."
+readme = "Squads Protocol — V4 Multisig for team treasury management, Smart Account Program for account abstraction/programmable wallets, and Grid for stablecoin rails and fintech infrastructure."
+summary = "Squads Protocol — V4 Multisig for team treasury management, Smart Account Program for account abstraction/programmable wallets, and Grid for stablecoin rails and fintech infrastructure."
 
 [agent.license]
 type = "sdpx"

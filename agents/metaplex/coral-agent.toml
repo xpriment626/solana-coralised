@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-metaplex"
 version = "0.1.0"
-description = "Metaplex NFT operations — Core NFTs, Token Metadata, Bubblegum compressed NFTs, Candy Machine, and the Umi framework on Solana."
+description = "Metaplex Protocol — Core NFTs, Token Metadata, Bubblegum cNFTs, Candy Machine, Genesis token launches, MPL-Hybrid, Inscriptions, DAS API, and the Umi framework on Solana."
 
-readme = "Metaplex NFT operations — Core NFTs, Token Metadata, Bubblegum compressed NFTs, Candy Machine, and the Umi framework on Solana."
-summary = "Metaplex NFT operations — Core NFTs, Token Metadata, Bubblegum compressed NFTs, Candy Machine, and the Umi framework on Solana."
+readme = "Metaplex Protocol — Core NFTs, Token Metadata, Bubblegum cNFTs, Candy Machine, Genesis token launches, MPL-Hybrid, Inscriptions, DAS API, and the Umi framework on Solana."
+summary = "Metaplex Protocol — Core NFTs, Token Metadata, Bubblegum cNFTs, Candy Machine, Genesis token launches, MPL-Hybrid, Inscriptions, DAS API, and the Umi framework on Solana."
 
 [agent.license]
 type = "sdpx"

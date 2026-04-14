@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-coingecko"
 version = "0.1.0"
-description = "CoinGecko market data — token prices, DEX pool data, OHLCV charts, trades, and analytics for Solana trading applications."
+description = "CoinGecko on-chain API — token prices, DEX pool data across 1,700+ DEXes and 15M+ tokens, OHLCV charts, trade history, and market analytics for Solana."
 
-readme = "CoinGecko market data — token prices, DEX pool data, OHLCV charts, trades, and analytics for Solana trading applications."
-summary = "CoinGecko market data — token prices, DEX pool data, OHLCV charts, trades, and analytics for Solana trading applications."
+readme = "CoinGecko on-chain API — token prices, DEX pool data across 1,700+ DEXes and 15M+ tokens, OHLCV charts, trade history, and market analytics for Solana."
+summary = "CoinGecko on-chain API — token prices, DEX pool data across 1,700+ DEXes and 15M+ tokens, OHLCV charts, trade history, and market analytics for Solana."
 
 [agent.license]
 type = "sdpx"

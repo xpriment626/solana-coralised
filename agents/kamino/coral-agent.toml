@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-kamino"
 version = "0.1.0"
-description = "Kamino Finance operations — lending, borrowing, automated liquidity strategies, leverage trading, and oracle aggregation on Solana."
+description = "Kamino Finance — lending/borrowing (klend-sdk), automated liquidity strategies (kliquidity-sdk), oracle aggregation (scope-sdk), multiply/leverage, vaults, and obligation orders on Solana."
 
-readme = "Kamino Finance operations — lending, borrowing, automated liquidity strategies, leverage trading, and oracle aggregation on Solana."
-summary = "Kamino Finance operations — lending, borrowing, automated liquidity strategies, leverage trading, and oracle aggregation on Solana."
+readme = "Kamino Finance — lending/borrowing (klend-sdk), automated liquidity strategies (kliquidity-sdk), oracle aggregation (scope-sdk), multiply/leverage, vaults, and obligation orders on Solana."
+summary = "Kamino Finance — lending/borrowing (klend-sdk), automated liquidity strategies (kliquidity-sdk), oracle aggregation (scope-sdk), multiply/leverage, vaults, and obligation orders on Solana."
 
 [agent.license]
 type = "sdpx"

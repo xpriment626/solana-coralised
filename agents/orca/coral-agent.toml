@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-orca"
 version = "0.1.0"
-description = "Orca Whirlpools concentrated liquidity operations — swaps, position management, pool creation, and fee harvesting on Solana and Eclipse."
+description = "Orca Whirlpools — concentrated liquidity swaps, position management, pool creation, fee harvesting, tick-range strategies on Solana and Eclipse. Covers both new (@orca-so/whirlpools) and legacy SDKs."
 
-readme = "Orca Whirlpools concentrated liquidity operations — swaps, position management, pool creation, and fee harvesting on Solana and Eclipse."
-summary = "Orca Whirlpools concentrated liquidity operations — swaps, position management, pool creation, and fee harvesting on Solana and Eclipse."
+readme = "Orca Whirlpools — concentrated liquidity swaps, position management, pool creation, fee harvesting, tick-range strategies on Solana and Eclipse. Covers both new (@orca-so/whirlpools) and legacy SDKs."
+summary = "Orca Whirlpools — concentrated liquidity swaps, position management, pool creation, fee harvesting, tick-range strategies on Solana and Eclipse. Covers both new (@orca-so/whirlpools) and legacy SDKs."
 
 [agent.license]
 type = "sdpx"

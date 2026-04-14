@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-jupiter-swap"
 version = "0.1.0"
-description = "Token swap operations via Jupiter — Ultra Swap API, limit orders, DCA, route optimisation, and all Jupiter endpoints on Solana."
+description = "Jupiter Protocol — Ultra Swap, Lend, Perps, DCA/recurring buys, trigger orders, prediction markets, token lock, portfolio tracking, route optimisation, and Studio on Solana."
 
-readme = "Token swap operations via Jupiter — Ultra Swap API, limit orders, DCA, route optimisation, and all Jupiter endpoints on Solana."
-summary = "Token swap operations via Jupiter — Ultra Swap API, limit orders, DCA, route optimisation, and all Jupiter endpoints on Solana."
+readme = "Jupiter Protocol — Ultra Swap, Lend, Perps, DCA/recurring buys, trigger orders, prediction markets, token lock, portfolio tracking, route optimisation, and Studio on Solana."
+summary = "Jupiter Protocol — Ultra Swap, Lend, Perps, DCA/recurring buys, trigger orders, prediction markets, token lock, portfolio tracking, route optimisation, and Studio on Solana."
 
 [agent.license]
 type = "sdpx"

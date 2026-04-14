@@ -3,10 +3,10 @@ edition = 3
 [agent]
 name = "solana-manifest"
 version = "0.1.0"
-description = "Manifest DEX integration — market reads, order placement, wrapper/global accounts, reverse orders, and frontend patterns on Solana."
+description = "Manifest CLOB DEX — on-chain order book, limit orders, reverse orders, global orders, Destiny vaults, wrapper/global account setup, and frontend integration on Solana."
 
-readme = "Manifest DEX integration — market reads, order placement, wrapper/global accounts, reverse orders, and frontend patterns on Solana."
-summary = "Manifest DEX integration — market reads, order placement, wrapper/global accounts, reverse orders, and frontend patterns on Solana."
+readme = "Manifest CLOB DEX — on-chain order book, limit orders, reverse orders, global orders, Destiny vaults, wrapper/global account setup, and frontend integration on Solana."
+summary = "Manifest CLOB DEX — on-chain order book, limit orders, reverse orders, global orders, Destiny vaults, wrapper/global account setup, and frontend integration on Solana."
 
 [agent.license]
 type = "sdpx"
