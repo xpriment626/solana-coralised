@@ -44,6 +44,63 @@ function requiredEnv(key: string): string {
   return v;
 }
 
+/** Numeric constraint keywords that OpenAI validates and that MCP schemas sometimes
+ *  set to absurd defaults (e.g. Number.MAX_SAFE_INTEGER). */
+const NUMERIC_CONSTRAINT_KEYS = [
+  "maxLength", "minLength", "maximum", "minimum",
+  "exclusiveMaximum", "exclusiveMinimum",
+  "maxItems", "minItems", "maxProperties", "minProperties",
+];
+
+/** Threshold above which a numeric constraint is stripped — OpenAI rejects these. */
+const MAX_SANE_NUMERIC = 1_000_000;
+
+/**
+ * Recursively patch MCP tool schemas for OpenAI compatibility:
+ *  - Add `additionalProperties: false` to every object-type schema
+ *  - Strip absurdly large numeric constraints
+ */
+function patchSchemaForOpenAI(schema: any): any {
+  if (schema == null || typeof schema !== "object") return schema;
+
+  const patched = { ...schema };
+
+  // If this level is type: "object" (or has "properties"), add the flag
+  if (patched.type === "object" || patched.properties) {
+    patched.additionalProperties = false;
+  }
+
+  // Strip numeric constraints that are too large for OpenAI
+  for (const key of NUMERIC_CONSTRAINT_KEYS) {
+    if (typeof patched[key] === "number" && Math.abs(patched[key]) > MAX_SANE_NUMERIC) {
+      delete patched[key];
+    }
+  }
+
+  // Recurse into properties
+  if (patched.properties) {
+    const props: Record<string, any> = {};
+    for (const [key, val] of Object.entries(patched.properties)) {
+      props[key] = patchSchemaForOpenAI(val);
+    }
+    patched.properties = props;
+  }
+
+  // Recurse into items (arrays)
+  if (patched.items) {
+    patched.items = patchSchemaForOpenAI(patched.items);
+  }
+
+  // Recurse into anyOf / oneOf / allOf
+  for (const keyword of ["anyOf", "oneOf", "allOf"] as const) {
+    if (Array.isArray(patched[keyword])) {
+      patched[keyword] = patched[keyword].map(patchSchemaForOpenAI);
+    }
+  }
+
+  return patched;
+}
+
 /** Convert MCP tool list → Vercel AI SDK tool map */
 function bridgeTools(
   mcpTools: Array<{ name: string; description?: string; inputSchema?: unknown }>,
@@ -55,9 +112,11 @@ function bridgeTools(
     // coral_wait_for_mention is handled by the outer loop, skip it
     if (t.name === "coral_wait_for_mention") continue;
 
+    const patchedSchema = patchSchemaForOpenAI(t.inputSchema ?? { type: "object", properties: {} });
+
     out[t.name] = tool({
       description: t.description ?? t.name,
-      parameters: jsonSchema(t.inputSchema as any),
+      parameters: jsonSchema(patchedSchema),
       execute: async (args: any) => {
         const result = await client.callTool({
           name: t.name,
@@ -105,7 +164,12 @@ export async function runCoralAgent(config: AgentConfig): Promise<never> {
 
   const transport = new StreamableHTTPClientTransport(new URL(coralUrl));
 
-  await client.connect(transport);
+  try {
+    await client.connect(transport);
+  } catch (err: any) {
+    console.error(`[${config.name}] FATAL: MCP connect failed:`, err?.message ?? err);
+    process.exit(1);
+  }
   console.log(`[${config.name}] Connected to Coral`);
 
   // ── Discover and bridge tools ──
@@ -134,18 +198,7 @@ export async function runCoralAgent(config: AgentConfig): Promise<never> {
         `[${config.name}] Mentioned: ${mentionPayload.substring(0, 120)}…`
       );
 
-      // 2. Read current session state for context
-      let stateContext = "";
-      try {
-        const state = await client.readResource({
-          uri: "mcp://coral/state",
-        });
-        stateContext = JSON.stringify(state.contents);
-      } catch {
-        // state read is best-effort
-      }
-
-      // 3. Let the LLM process and respond via coral tools
+      // 2. Let the LLM process and respond via coral tools
       await generateText({
         model,
         system: systemPrompt,
@@ -153,12 +206,9 @@ export async function runCoralAgent(config: AgentConfig): Promise<never> {
           {
             role: "user",
             content: [
-              stateContext && `<session_state>\n${stateContext}\n</session_state>`,
               `<mention>\n${mentionPayload}\n</mention>`,
               `Process this mention. Use coral_send_message to respond on the correct thread. If you need to coordinate with other agents, use the coral tools available to you.`,
-            ]
-              .filter(Boolean)
-              .join("\n\n"),
+            ].join("\n\n"),
           },
         ],
         tools: aiTools,
