@@ -1,5 +1,4 @@
 import type { Wallet } from "../../shared/wallet.js";
-import { getConnection } from "../../shared/rpc.js";
 import { VersionedTransaction } from "@solana/web3.js";
 import { tool } from "ai";
 import { z } from "zod";
