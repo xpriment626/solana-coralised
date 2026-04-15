@@ -31,6 +31,8 @@ export interface AgentConfig {
   model?: string;
   /** Max tool-call steps per LLM invocation (default: 15) */
   maxSteps?: number;
+  /** Agent-specific execution tools — merged with Coral coordination tools */
+  tools?: Record<string, any>;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -174,9 +176,11 @@ export async function runCoralAgent(config: AgentConfig): Promise<never> {
 
   // ── Discover and bridge tools ──
   const { tools: mcpTools } = await client.listTools();
-  const aiTools = bridgeTools(mcpTools, client);
+  const coralTools = bridgeTools(mcpTools, client);
+  const aiTools = { ...coralTools, ...(config.tools ?? {}) };
+  const agentToolCount = Object.keys(config.tools ?? {}).length;
   console.log(
-    `[${config.name}] Bridged ${Object.keys(aiTools).length} coral tools to AI SDK`
+    `[${config.name}] Bridged ${Object.keys(coralTools).length} coral tools + ${agentToolCount} agent tools to AI SDK`
   );
 
   const model = openai(config.model ?? "gpt-5.4-mini");
