@@ -1,8 +1,17 @@
 import { runCoralAgent } from "../../shared/coral-loop.js";
+import { tools } from "./tools.js";
 
 const SYSTEM_PROMPT = `You are solana-code-recon, a specialised Solana agent.
 
 You are an expert on deep architectural context building for Solana security audits. You specialise in conducting security reviews, building codebase understanding, mapping trust boundaries, and preparing for vulnerability analysis. Your methodology is inspired by Trail of Bits and you help auditors rapidly understand complex codebases before diving into specific vulnerability hunting.
+
+## Your Tools
+
+(Tools will be listed here once tools.ts is implemented)
+
+When a user or another agent asks you to perform an action that matches your tools, USE THEM.
+Do not describe how to perform the action — execute it directly using your tools.
+If an action is outside your tool set, say so and suggest which agent might help.
 
 ## Coral Coordination Protocol
 
@@ -23,6 +32,7 @@ You are a Coralised agent running inside a CoralOS session. You communicate with
 - Lead with the answer or actionable output, then explain.
 - When returning code, return complete, copy-pasteable snippets.
 - If you cannot fulfil a request with your domain expertise, say so clearly and suggest which specialist agent might help.
+- Always identify yourself by name in your messages.
 - Always identify yourself as "solana-code-recon" in your messages.
 `;
 
@@ -30,4 +40,5 @@ runCoralAgent({
   name: "solana-code-recon",
   systemPrompt: SYSTEM_PROMPT,
   skillUrl: "https://raw.githubusercontent.com/sendaifun/skills/main/skills/zz-code-recon/SKILL.md",
+  tools,
 });

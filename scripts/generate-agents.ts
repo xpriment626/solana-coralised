@@ -4,7 +4,7 @@
  * Run: npx tsx scripts/generate-agents.ts
  */
 
-import { mkdirSync, writeFileSync, chmodSync } from "fs";
+import { mkdirSync, writeFileSync, chmodSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 
 const AGENTS_DIR = join(import.meta.dirname!, "..", "agents");
@@ -43,6 +43,8 @@ interface AgentDef {
   domain: string;
   /** Skill name in sendaifun/skills repo (for SKILL.md fetch). Omit if no matching skill. */
   skillSlug?: string;
+  /** True for agents that need wallet signing for transactions */
+  signing?: boolean;
 }
 
 const SKILL_BASE =
@@ -54,6 +56,7 @@ const agents: AgentDef[] = [
     dir: "jupiter-swap",
     name: "solana-jupiter-swap",
     skillSlug: "jupiter",
+    signing: true,
     description:
       "Jupiter Protocol — Ultra Swap, Lend, Perps, DCA/recurring buys, trigger orders, prediction markets, token lock, portfolio tracking, route optimisation, and Studio on Solana.",
     domain:
@@ -90,6 +93,7 @@ const agents: AgentDef[] = [
     dir: "pumpfun",
     name: "solana-pumpfun",
     skillSlug: "pumpfun",
+    signing: true,
     description:
       "PumpFun Protocol — bonding curve token launches, buy/sell operations, PumpSwap AMM post-graduation, creator fees, Token2022 support, and Mayhem mode on Solana.",
     domain:
@@ -486,38 +490,84 @@ exec npx tsx "$SCRIPT_DIR/index.ts"
 }
 
 function generateIndexTs(agent: AgentDef): string {
-  return `import { runCoralAgent } from "../../shared/coral-loop.js";
+  const coralInstructions = CORAL_INSTRUCTIONS.replace(/`/g, "\\`");
+  if (agent.signing) {
+    return `import { runCoralAgent } from "../../shared/coral-loop.js";
+import { KeypairWallet } from "../../shared/wallet.js";
+import { createTools } from "./tools.js";
+import bs58 from "bs58";
+
+const wallet = new KeypairWallet(bs58.decode(process.env.SOLANA_PRIVATE_KEY!));
+const tools = createTools(wallet);
 
 const SYSTEM_PROMPT = \`You are ${agent.name}, a specialised Solana agent.
 
 ${agent.domain}
 
-## Coral Coordination Protocol
+## Your Tools
 
-You are a Coralised agent running inside a CoralOS session. You communicate with other agents via Coral's thread-based messaging system.
+(Tools will be listed here once tools.ts is implemented)
 
-### How to respond when mentioned
-1. Read the mention payload to understand what is being asked of you.
-2. Identify the thread ID from the mention.
-3. Use \\\`coral_send_message\\\` to reply on that thread, mentioning the requesting agent by name.
-4. Be specific, structured, and actionable in your responses.
+When a user or another agent asks you to perform an action that matches your tools, USE THEM.
+Do not describe how to perform the action — execute it directly using your tools.
+If an action is outside your tool set, say so and suggest which agent might help.
 
-### How to coordinate with other agents
-- To ask another agent for help: use \\\`coral_create_thread\\\` with a descriptive topic, add them as a participant, then \\\`coral_send_message\\\` mentioning them.
-- To add agents to an existing conversation: use \\\`coral_add_participant\\\`.
-- After sending a message that expects a reply, use \\\`coral_wait_for_agent\\\` to block until they respond.
-
-### Communication style
-- Lead with the answer or actionable output, then explain.
-- When returning code, return complete, copy-pasteable snippets.
-- If you cannot fulfil a request with your domain expertise, say so clearly and suggest which specialist agent might help.
+${coralInstructions}
 - Always identify yourself as "${agent.name}" in your messages.
 \`;
 
 runCoralAgent({
   name: "${agent.name}",
   systemPrompt: SYSTEM_PROMPT,${agent.skillSlug ? `\n  skillUrl: "${SKILL_BASE}/${agent.skillSlug}/SKILL.md",` : ""}
+  tools,
 });
+`;
+  }
+
+  return `import { runCoralAgent } from "../../shared/coral-loop.js";
+import { tools } from "./tools.js";
+
+const SYSTEM_PROMPT = \`You are ${agent.name}, a specialised Solana agent.
+
+${agent.domain}
+
+## Your Tools
+
+(Tools will be listed here once tools.ts is implemented)
+
+When a user or another agent asks you to perform an action that matches your tools, USE THEM.
+Do not describe how to perform the action — execute it directly using your tools.
+If an action is outside your tool set, say so and suggest which agent might help.
+
+${coralInstructions}
+- Always identify yourself as "${agent.name}" in your messages.
+\`;
+
+runCoralAgent({
+  name: "${agent.name}",
+  systemPrompt: SYSTEM_PROMPT,${agent.skillSlug ? `\n  skillUrl: "${SKILL_BASE}/${agent.skillSlug}/SKILL.md",` : ""}
+  tools,
+});
+`;
+}
+
+function generateToolsPlaceholder(agent: AgentDef): string {
+  if (agent.signing) {
+    return `import type { Wallet } from "../../shared/wallet.js";
+import { tool } from "ai";
+import { z } from "zod";
+
+// Placeholder — add tools for this agent here
+export function createTools(wallet: Wallet) {
+  return {};
+}
+`;
+  }
+  return `import { tool } from "ai";
+import { z } from "zod";
+
+// Placeholder — add tools for this agent here
+export const tools = {};
 `;
 }
 
@@ -525,18 +575,33 @@ runCoralAgent({
 
 console.log(`Generating ${agents.length} agents…`);
 
+let generated = 0;
+let skipped = 0;
+
 for (const agent of agents) {
   const dir = join(AGENTS_DIR, agent.dir);
   mkdirSync(dir, { recursive: true });
 
-  writeFileSync(join(dir, "coral-agent.toml"), generateCoralAgentToml(agent));
-  writeFileSync(join(dir, "index.ts"), generateIndexTs(agent));
+  const toolsPath = join(dir, "tools.ts");
+  const isHandMaintained =
+    existsSync(toolsPath) &&
+    !readFileSync(toolsPath, "utf-8").includes("// Placeholder");
 
+  // Always regenerate TOML and startup (these are never hand-edited)
+  writeFileSync(join(dir, "coral-agent.toml"), generateCoralAgentToml(agent));
   const startupPath = join(dir, "startup.sh");
   writeFileSync(startupPath, generateStartupSh(agent));
   chmodSync(startupPath, 0o755);
 
-  console.log(`  ✓ ${agent.dir} (${agent.name})`);
+  if (isHandMaintained) {
+    console.log(`  ⊘ ${agent.dir} — hand-maintained (toml+startup only)`);
+    skipped++;
+  } else {
+    writeFileSync(join(dir, "index.ts"), generateIndexTs(agent));
+    writeFileSync(toolsPath, generateToolsPlaceholder(agent));
+    console.log(`  ✓ ${agent.dir} (${agent.name})`);
+    generated++;
+  }
 }
 
-console.log(`\nDone. ${agents.length} agents generated in agents/`);
+console.log(`\nDone. ${generated} agents generated, ${skipped} hand-maintained (skipped tools/index).`);
