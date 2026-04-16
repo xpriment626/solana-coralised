@@ -45,19 +45,19 @@ export const tools = {
         .describe("Wallet address to query"),
       page: z
         .number()
-        .optional()
+        .default(1)
         .describe("Page number for pagination (default 1)"),
       limit: z
         .number()
-        .optional()
+        .default(100)
         .describe("Results per page (default 100, max 1000)"),
       showFungible: z
         .boolean()
-        .optional()
+        .default(true)
         .describe("Include fungible tokens (default true)"),
       showNativeBalance: z
         .boolean()
-        .optional()
+        .default(true)
         .describe("Include SOL balance (default true)"),
     }),
     execute: async ({
@@ -69,11 +69,11 @@ export const tools = {
     }) => {
       return rpcCall("getAssetsByOwner", {
         ownerAddress,
-        page: page ?? 1,
-        limit: limit ?? 100,
+        page,
+        limit,
         displayOptions: {
-          showFungible: showFungible ?? true,
-          showNativeBalance: showNativeBalance ?? true,
+          showFungible,
+          showNativeBalance,
         },
       });
     },
@@ -97,7 +97,7 @@ export const tools = {
           "veryHigh",
           "unsafeMax",
         ])
-        .optional()
+        .default("high")
         .describe(
           "Priority level to optimize for (default 'high')"
         ),
@@ -107,7 +107,7 @@ export const tools = {
         {
           accountKeys,
           options: {
-            priorityLevel: priorityLevel ?? "high",
+            priorityLevel,
             includeAllPriorityFeeLevels: true,
           },
         },

@@ -67,13 +67,13 @@ export const tools = {
         .describe("Candle timeframe"),
       aggregate: z
         .number()
-        .optional()
+        .default(1)
         .describe(
           "Candle size multiplier (e.g. 15 for 15-minute candles). Default 1"
         ),
       limit: z
         .number()
-        .optional()
+        .default(100)
         .describe("Number of candles to return (default 100, max 1000)"),
     }),
     execute: async ({ poolAddress, timeframe, aggregate, limit }) => {

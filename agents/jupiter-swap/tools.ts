@@ -33,7 +33,7 @@ export function createTools(wallet: Wallet) {
           ),
         slippageBps: z
           .number()
-          .optional()
+          .default(50)
           .describe(
             "Slippage tolerance in basis points (default 50 = 0.5%)"
           ),
@@ -92,7 +92,7 @@ export function createTools(wallet: Wallet) {
           ),
         slippageBps: z
           .number()
-          .optional()
+          .default(50)
           .describe(
             "Slippage tolerance in basis points (default 50 = 0.5%)"
           ),

@@ -13,6 +13,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { generateText, tool, jsonSchema } from "ai";
 import { openai } from "@ai-sdk/openai";
+import zodToJsonSchema from "zod-to-json-schema";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -58,8 +59,9 @@ const NUMERIC_CONSTRAINT_KEYS = [
 const MAX_SANE_NUMERIC = 1_000_000;
 
 /**
- * Recursively patch MCP tool schemas for OpenAI compatibility:
+ * Recursively patch tool schemas for OpenAI strict-mode compatibility:
  *  - Add `additionalProperties: false` to every object-type schema
+ *  - Ensure `required` includes every key in `properties`
  *  - Strip absurdly large numeric constraints
  */
 function patchSchemaForOpenAI(schema: any): any {
@@ -67,9 +69,14 @@ function patchSchemaForOpenAI(schema: any): any {
 
   const patched = { ...schema };
 
-  // If this level is type: "object" (or has "properties"), add the flag
+  // If this level is type: "object" (or has "properties"), enforce strict-mode rules
   if (patched.type === "object" || patched.properties) {
     patched.additionalProperties = false;
+
+    // OpenAI strict mode: every property key must be in `required`
+    if (patched.properties) {
+      patched.required = Object.keys(patched.properties);
+    }
   }
 
   // Strip numeric constraints that are too large for OpenAI
@@ -101,6 +108,30 @@ function patchSchemaForOpenAI(schema: any): any {
   }
 
   return patched;
+}
+
+/**
+ * Patch agent-specific tools (Zod-based) for OpenAI strict-mode compatibility.
+ * Converts Zod schemas → JSON Schema, applies patchSchemaForOpenAI, re-wraps
+ * with jsonSchema() so all properties land in `required`.
+ */
+function patchAgentTools(agentTools: Record<string, any>): Record<string, any> {
+  const out: Record<string, any> = {};
+  for (const [name, t] of Object.entries(agentTools)) {
+    // Detect Zod schema by checking for _def (Zod internals)
+    if (t.parameters?._def) {
+      const raw = zodToJsonSchema(t.parameters, { target: "openApi3" });
+      const patched = patchSchemaForOpenAI(raw);
+      out[name] = tool({
+        description: t.description,
+        parameters: jsonSchema(patched),
+        execute: t.execute,
+      });
+    } else {
+      out[name] = t;
+    }
+  }
+  return out;
 }
 
 /** Convert MCP tool list → Vercel AI SDK tool map */
@@ -177,7 +208,7 @@ export async function runCoralAgent(config: AgentConfig): Promise<never> {
   // ── Discover and bridge tools ──
   const { tools: mcpTools } = await client.listTools();
   const coralTools = bridgeTools(mcpTools, client);
-  const aiTools = { ...coralTools, ...(config.tools ?? {}) };
+  const aiTools = { ...coralTools, ...patchAgentTools(config.tools ?? {}) };
   const agentToolCount = Object.keys(config.tools ?? {}).length;
   console.log(
     `[${config.name}] Bridged ${Object.keys(coralTools).length} coral tools + ${agentToolCount} agent tools to AI SDK`
@@ -189,13 +220,28 @@ export async function runCoralAgent(config: AgentConfig): Promise<never> {
   // ── Agent loop ──
   console.log(`[${config.name}] Entering main loop — waiting for mentions…`);
 
+  // Track when the last mention was received so the next coral_wait_for_mention
+  // replays messages from that point — not from "now". Without this, messages
+  // sent by other agents during our generateText processing window are missed
+  // because the server's default currentUnixTime = System.currentTimeMillis()
+  // starts the replay AFTER those messages were sent.
+  let lastMentionTimestamp: number | undefined;
+
   while (true) {
     try {
       // 1. Block until another agent mentions us
+      const waitArgs: Record<string, unknown> = {};
+      if (lastMentionTimestamp != null) {
+        waitArgs.currentUnixTime = lastMentionTimestamp;
+      }
+
       const mention = await client.callTool({
         name: "coral_wait_for_mention",
-        arguments: {},
+        arguments: waitArgs,
       });
+
+      // Record when this mention arrived — the NEXT wait will replay from here
+      lastMentionTimestamp = Date.now();
 
       const mentionPayload = JSON.stringify(mention.content);
       console.log(

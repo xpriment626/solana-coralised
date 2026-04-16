@@ -18,7 +18,7 @@ export function createTools(wallet: Wallet) {
           .describe("Amount of SOL to spend"),
         slippagePercent: z
           .number()
-          .optional()
+          .default(5)
           .describe(
             "Slippage tolerance as percentage (default 5)"
           ),
@@ -37,7 +37,7 @@ export function createTools(wallet: Wallet) {
               mint,
               amount: amountSol,
               denominatedInSol: "true",
-              slippage: slippagePercent ?? 5,
+              slippage: slippagePercent,
               priorityFee: 0.0005,
               pool: "pump",
             }),
@@ -73,7 +73,7 @@ export function createTools(wallet: Wallet) {
           ),
         slippagePercent: z
           .number()
-          .optional()
+          .default(5)
           .describe(
             "Slippage tolerance as percentage (default 5)"
           ),
@@ -96,7 +96,7 @@ export function createTools(wallet: Wallet) {
               mint,
               amount: amountTokens,
               denominatedInSol: "false",
-              slippage: slippagePercent ?? 5,
+              slippage: slippagePercent,
               priorityFee: 0.0005,
               pool: "pump",
             }),
@@ -133,13 +133,13 @@ export function createTools(wallet: Wallet) {
           ),
         initialBuySol: z
           .number()
-          .optional()
+          .default(0)
           .describe(
             "SOL amount for initial buy after creation (default 0 = no initial buy)"
           ),
         slippagePercent: z
           .number()
-          .optional()
+          .default(5)
           .describe(
             "Slippage tolerance for initial buy (default 5)"
           ),
@@ -169,8 +169,8 @@ export function createTools(wallet: Wallet) {
               },
               mint: mintKeypair.publicKey.toBase58(),
               denominatedInSol: "true",
-              amount: initialBuySol ?? 0,
-              slippage: slippagePercent ?? 5,
+              amount: initialBuySol,
+              slippage: slippagePercent,
               priorityFee: 0.0005,
               pool: "pump",
             }),
