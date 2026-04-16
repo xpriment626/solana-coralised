@@ -12,6 +12,6 @@
     "declaration": true,
     "types": ["node"]
   },
-  "include": ["shared/**/*.ts", "agents/**/*.ts"],
-  "exclude": ["node_modules", "dist", "scripts"]
+  "include": ["src/**/*.ts", "agents/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
