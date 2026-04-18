@@ -115,9 +115,17 @@ export interface CreateToolReadmitHandlerInput {
  * Returns a turn-event handler that re-admits the full tool list (including
  * the three coral_wait_* primitives filtered by FIRST_TURN_TOOL_BLOCKLIST)
  * into `context.tools` on the first `turn_end`. Subsequent turn_end events
- * are no-ops. The handler mutates `context.tools` in place so that
- * `runAgentLoop`'s next `streamAssistantResponse` reads the updated tool list
- * at the LLM call boundary — context is the live loop context, not a snapshot.
+ * are no-ops.
+ *
+ * The handler mutates the `context.tools` array IN PLACE (length reset +
+ * push) rather than reassigning. This is deliberate: `runAgentLoop` begins
+ * with `currentContext = { ...context, messages: [...] }`, which copies the
+ * *reference* to the tools array into `currentContext.tools`. Reassigning
+ * `context.tools = newArray` later updates our outer handle but leaves the
+ * loop pointing at the original array — the LLM would never see the swap.
+ * In-place mutation preserves reference identity so the loop's next
+ * `streamAssistantResponse` picks up the full tool list at the LLM-call
+ * boundary.
  *
  * Fixture-1 predicate 3 (peer atom correctly waits) requires wait tools at
  * iter-N>0. Attempt 2 achieved receive-GREEN by filtering wait tools on turn 1
@@ -132,7 +140,13 @@ export function createToolReadmitHandler(
   return (event) => {
     if (event.type !== "turn_end") return;
     if (swapped) return;
-    input.context.tools = input.allTools;
+    const tools = input.context.tools;
+    if (tools) {
+      tools.length = 0;
+      tools.push(...input.allTools);
+    } else {
+      input.context.tools = [...input.allTools];
+    }
     swapped = true;
   };
 }
