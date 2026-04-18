@@ -1,3 +1,3 @@
-import { startAtom } from "../../src/runtime/atom-template.js";
+import { runAtom } from "../../src/runtime/pi-runtime.js";
 
-startAtom({ atomName: "dummy-atom" });
+runAtom({ atomName: "dummy-atom", localTools: [] });
