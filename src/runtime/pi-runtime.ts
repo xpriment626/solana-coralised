@@ -1,5 +1,10 @@
-import type { AgentTool } from "@mariozechner/pi-agent-core";
-import { buildSystemPrompt } from "./prompt.js";
+import { Agent, type AgentTool } from "@mariozechner/pi-agent-core";
+import { getModel, type KnownProvider } from "@mariozechner/pi-ai";
+
+import { connectCoralMcp } from "./coral-mcp.js";
+import { writeIterationArtifact } from "./debug.js";
+import { readCoralEnv } from "./env.js";
+import { buildSystemPrompt, buildUserTurn } from "./prompt.js";
 
 export interface PreparedFirstTurnEnv {
   SYSTEM_PROMPT: string;
@@ -54,4 +59,101 @@ export async function prepareFirstTurn(
   );
 
   return { systemPrompt, instructionResource, stateResource, firstTurnTools };
+}
+
+export interface RunAtomConfig {
+  atomName: string;
+  localTools: AgentTool<any>[];
+  /** Additional secret values to redact from debug artifacts. */
+  secretsFromEnv?: string[];
+}
+
+/**
+ * End-to-end atom runtime on pi-mono:
+ *   1. reads Coral env
+ *   2. connects to Coral MCP (streamable HTTP)
+ *   3. pre-loads coral://instruction + coral://state into the system prompt
+ *      via prepareFirstTurn (fixture-1 predicate 1 + 1.b)
+ *   4. spins up a pi-mono Agent with the prepared prompt and first-turn tools
+ *      (wait tools filtered — see FIRST_TURN_TOOL_BLOCKLIST)
+ *   5. drives one `agent.prompt(initialUserTurn)` and waits for idle
+ *   6. writes per-turn_end debug artifacts via writeIterationArtifact
+ *
+ * This commit deliberately scopes the tool set to first-turn-only: wait tools
+ * are not re-admitted after turn 1. That's fine for the trends-only
+ * "receive still works" milestone; molecule-era iter-N>0 behavior (peer atom
+ * waits, handoff completes) is a follow-up commit with its own fixture.
+ */
+export async function runAtom(config: RunAtomConfig): Promise<void> {
+  const env = readCoralEnv();
+  const modelApiKey = process.env.MODEL_API_KEY;
+  if (!modelApiKey) {
+    throw new Error(
+      "Missing MODEL_API_KEY — required to instantiate the pi-mono Agent. " +
+        "Set via coral-agent.toml [options] or the env."
+    );
+  }
+  const modelProvider = (process.env.MODEL_PROVIDER ??
+    "openai") as KnownProvider;
+  const modelId = process.env.MODEL_ID ?? "gpt-4o-mini";
+
+  const coral = await connectCoralMcp(
+    env.CORAL_CONNECTION_URL,
+    env.CORAL_AGENT_ID
+  );
+
+  try {
+    const allTools = [...coral.tools, ...config.localTools];
+
+    const prepared = await prepareFirstTurn({
+      mcp: { readResource: coral.readResource, tools: allTools },
+      env,
+    });
+
+    const model = getModel(modelProvider as any, modelId as any);
+
+    const agent = new Agent({
+      initialState: {
+        systemPrompt: prepared.systemPrompt,
+        model,
+        tools: prepared.firstTurnTools,
+      },
+      convertToLlm: (messages) => messages as any,
+      getApiKey: async () => modelApiKey,
+    });
+
+    const secrets = [
+      modelApiKey,
+      env.CORAL_AGENT_SECRET,
+      ...(config.secretsFromEnv ?? []),
+    ].filter((s): s is string => typeof s === "string" && s.length > 0);
+
+    let iteration = 0;
+    agent.subscribe(async (ev) => {
+      if (ev.type !== "turn_end") return;
+      iteration += 1;
+      await writeIterationArtifact({
+        atomName: config.atomName,
+        sessionId: env.CORAL_SESSION_ID,
+        iteration,
+        secretsFromEnv: secrets,
+        payload: {
+          iteration,
+          event: ev,
+          ts: new Date().toISOString(),
+        },
+      });
+    });
+
+    const initialUserTurn = buildUserTurn({
+      iteration: 0,
+      extraInitialUserPrompt: env.EXTRA_INITIAL_USER_PROMPT,
+      followupUserPrompt: env.FOLLOWUP_USER_PROMPT,
+    });
+
+    await agent.prompt(initialUserTurn);
+    await agent.waitForIdle();
+  } finally {
+    await coral.close();
+  }
 }

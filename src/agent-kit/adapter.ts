@@ -1,8 +1,8 @@
-import { tool } from "ai";
+import type { AgentTool } from "@mariozechner/pi-agent-core";
 import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 import { redactSecrets } from "../runtime/debug.js";
-import type { LocalTool, LocalToolRegistry } from "../runtime/tools.js";
 import {
   errorEnvelope,
   normalizeAgentKitResult,
@@ -19,7 +19,7 @@ export interface AdaptParams {
 }
 
 /**
- * Project a subset of Agent Kit actions into a LocalToolRegistry.
+ * Project a subset of Agent Kit actions into a list of pi-mono AgentTools.
  *
  * Each adapted tool's `execute`:
  *   1. runs the action's handler inside try/catch
@@ -27,18 +27,18 @@ export interface AdaptParams {
  *   3. catches thrown errors into a structured error envelope
  *   4. runs the final envelope through redactSecrets before returning
  *
- * Tool names are prefixed `agentkit.<action_lowercased>` to avoid colliding
- * with Coral MCP tools and to make provenance visible in logs.
+ * Tool names are prefixed `agentkit_<action_lowercased>` to avoid colliding
+ * with Coral MCP tools and to make provenance visible in logs. Parameter
+ * schemas come from each action's zod definition and are projected to JSON
+ * Schema via zod-to-json-schema so pi-mono / the LLM providers accept them.
  */
-export function adaptAgentKitActions(
-  params: AdaptParams
-): LocalToolRegistry {
+export function adaptAgentKitActions(params: AdaptParams): AgentTool<any>[] {
   const byName = new Map<string, AgentKitAction>();
   for (const action of params.registry) {
     byName.set(action.name, action);
   }
 
-  const registry: LocalToolRegistry = {};
+  const tools: AgentTool<any>[] = [];
   const secrets = params.secretsFromEnv ?? [];
 
   for (const actionName of params.allowlist) {
@@ -57,15 +57,17 @@ export function adaptAgentKitActions(
     }
 
     const plugin = params.pluginByAction?.[actionName] ?? "unknown";
-    // OpenAI tool names must match ^[a-zA-Z0-9_-]+$ — dots are rejected.
     const toolName = `agentkit_${action.name.toLowerCase()}`;
-    const parameters = action.schema ?? z.object({});
+    const zodSchema = action.schema ?? z.object({});
+    const jsonSchema = zodToJsonSchema(zodSchema, { target: "openApi3" });
 
-    const wrapped: LocalTool = tool({
+    const tool: AgentTool<any> = {
+      name: toolName,
+      label: toolName,
       description:
         action.description ?? `Agent Kit action ${action.name}`,
-      parameters,
-      execute: async (input: unknown) => {
+      parameters: jsonSchema as any,
+      execute: async (_toolCallId, input) => {
         let envelope: AgentKitResultEnvelope;
         try {
           const raw = await action.handler(
@@ -86,12 +88,16 @@ export function adaptAgentKitActions(
             message,
           });
         }
-        return redactSecrets(envelope, secrets);
+        const redacted = redactSecrets(envelope, secrets);
+        return {
+          content: [{ type: "text", text: JSON.stringify(redacted) }],
+          details: undefined,
+        };
       },
-    });
+    };
 
-    registry[toolName] = wrapped;
+    tools.push(tool);
   }
 
-  return registry;
+  return tools;
 }

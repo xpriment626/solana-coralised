@@ -2,7 +2,7 @@ import { createRequire } from "node:module";
 
 import { adaptAgentKitActions } from "../agent-kit/adapter.js";
 import type { AgentKitAction, AgentKitAgent } from "../agent-kit/types.js";
-import { startAtom } from "../runtime/atom-template.js";
+import { runAtom } from "../runtime/pi-runtime.js";
 
 import { marketDataAtoms } from "./market-data.js";
 import type { AtomActionRef, AtomManifest } from "./manifest.js";
@@ -142,17 +142,22 @@ export async function bootstrapAtom(params: BootstrapParams): Promise<void> {
   const agent = buildAgent(creds, pluginPackagesForManifest(manifest));
 
   const allowlist = manifest.actions.map((a) => a.actionName);
+  const secretsFromEnv = [
+    creds.coingeckoKey ?? "",
+    creds.heliusKey ?? "",
+    process.env.MODEL_API_KEY ?? "",
+  ].filter(Boolean);
   const tools = adaptAgentKitActions({
     registry: agent.actions,
     allowlist,
     agent,
     pluginByAction: pluginByAction(manifest),
-    secretsFromEnv: [
-      creds.coingeckoKey ?? "",
-      creds.heliusKey ?? "",
-      process.env.MODEL_API_KEY ?? "",
-    ].filter(Boolean),
+    secretsFromEnv,
   });
 
-  await startAtom({ atomName: params.atomName, tools });
+  await runAtom({
+    atomName: params.atomName,
+    localTools: tools,
+    secretsFromEnv,
+  });
 }
