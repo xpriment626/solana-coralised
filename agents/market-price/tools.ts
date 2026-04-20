@@ -49,7 +49,7 @@ export function buildMarketPriceTools(): BuildToolsResult {
   const wallet = new sak.KeypairWallet(Keypair.generate(), rpcUrl);
 
   let agent = new sak.SolanaAgentKit(wallet, rpcUrl, {
-    COINGECKO_PRO_API_KEY: coingeckoKey,
+    COINGECKO_DEMO_API_KEY: coingeckoKey,
   }) as unknown as {
     actions: AgentKitAction[];
     use: (plugin: unknown) => typeof agent;
